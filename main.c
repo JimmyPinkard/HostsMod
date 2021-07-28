@@ -7,13 +7,12 @@
 
 #ifdef _WIN32
 int isPosixComplient = 0;
-#elif UNIX
+#else
 int isPosixComplient = 1;
 #endif
 
 void *err_malloc(size_t size);
 void err_free(void *ptr);
-void string_cpy(char *dest, char *src);
 void mod_hosts();
 
 int main(int argc, char *argv[])
@@ -21,11 +20,17 @@ int main(int argc, char *argv[])
     char *path;
     if(isPosixComplient)
     {
-        string_cpy(path, "/etc/hosts\0");
+        char src[] = "/etc/hosts\0";
+        short length = (short)strlen(src);
+        path = (char *)err_malloc(length);
+        strncpy(path, src, length);
     }
     else
     {
-        string_cpy(path, "C:\\Windows\\System32\\drivers\\etc\\hosts\0");
+        char src[] = "C:\\Windows\\System32\\drivers\\etc\\hosts\0";
+        short length = (short)strlen(src);
+        path = (char *)err_malloc(length);
+        strncpy(path, src, length);
     }
     FILE *file_ptr = fopen(path, "a");
     mod_hosts(file_ptr); 
@@ -53,12 +58,6 @@ void err_free(void *ptr)
     }
     free(ptr);
     ptr = NULL;
-}
-void string_cpy(char *dest, char *src)
-{
-    int length = strlen(src);
-    dest = (char *)err_malloc(length);
-    strncpy(dest, src, length);
 }
 void mod_hosts(FILE *file_ptr)
 {
