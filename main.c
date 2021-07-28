@@ -52,7 +52,7 @@ void *err_malloc(size_t size)
 }
 void err_free(void *ptr)
 {
-    if(ptr != NULL)
+    if(ptr == NULL)
     {
         return;
     }
