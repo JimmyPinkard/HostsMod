@@ -1,44 +1,37 @@
-#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 //Really just is not windows
-int isPosixComplient = 1;
+//int isPosixComplient;
 
-#ifdef WIN32
-isPosixComplient = 0;
+#ifdef _WIN32
+int isPosixComplient = 0;
 #elif UNIX
-isPosixComplient = 1;
+int isPosixComplient = 1;
 #endif
-
-typedef struct string
-{
-    char *val;
-    int length;
-}string;
 
 void *err_malloc(size_t size);
 void err_free(void *ptr);
-void string_cpy(string *dest, char *src);
-void destory_string(string *str);
+void string_cpy(char *dest, char *src);
 void mod_hosts();
 
 int main(int argc, char *argv[])
 {
-    string path = {};
+    char *path;
     if(isPosixComplient)
     {
-        string_cpy(&path, "/etc/hosts\0");
+        string_cpy(path, "/etc/hosts\0");
     }
     else
     {
-        string_cpy(&path, "\\Windows\\System32\\Drivers\\etc\\hosts\0");
+        string_cpy(path, "C:\\Windows\\System32\\drivers\\etc\\hosts\0");
     }
-    FILE *file_ptr = fopen(path.val, "a");
-    destory_string(&path);
+    FILE *file_ptr = fopen(path, "a");
     mod_hosts(file_ptr); 
     fclose(file_ptr);
+    printf("Wrote to %s\n", path);
+    err_free(path);
     return 0;
 }
 
@@ -61,17 +54,11 @@ void err_free(void *ptr)
     free(ptr);
     ptr = NULL;
 }
-void string_cpy(string *dest, char *src)
+void string_cpy(char *dest, char *src)
 {
     int length = strlen(src);
-    dest->length = length;
-    dest->val = (char *)err_malloc(length);
-    strncpy(dest->val, src, dest->length);
-}
-void destory_string(string *str)
-{
-    err_free(str->val);
-    str->length = 0;
+    dest = (char *)err_malloc(length);
+    strncpy(dest, src, length);
 }
 void mod_hosts(FILE *file_ptr)
 {
