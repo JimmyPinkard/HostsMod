@@ -11,4 +11,5 @@ $(OBJ) : $(SRC)
 	$(COMP) $(FLAGS) -c $(SRC)
 clean : 
 	rm $(BIN) $(OBJ)
-
+windows :
+	$(COMP) main.c -o $(BIN)
