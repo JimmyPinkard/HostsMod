@@ -5,29 +5,30 @@
 
 int main(int argc, char *argv[])
 {
-    if (argc == 1) {
-      printf("Missing block parameter: HostsMod /path/to/block/list\n");
-      exit(EXIT_FAILURE);
-    }
+  if (argc == 1)
+  {
+    printf("Missing block parameter: HostsMod /path/to/block/list\n");
+    exit(EXIT_FAILURE);
+  }
 
-    int total_b = 0;
-    Lines **blocks = extract_lines(argv[argc-1], &total_b, NULL);
+  int total_b = 0;
+  Lines **blocks = extract_lines(argv[argc-1], &total_b, NULL);
 
-    int total_h = 0;
-    Lines **hosts = extract_lines("/etc/hosts\0", &total_h, NULL);
+  int total_h = 0;
+  Lines **hosts = extract_lines("/etc/hosts\0", &total_h, NULL);
 
-    char *path;
-    char src[] = "/etc/hosts\0";
-    short length = (short)strlen(src);
-    path = (char *)err_malloc(length);
-    path[length] = '\0';
-    strncpy(path, src, length);
-    FILE *file_ptr = fopen(path, "w");
-    mod_hosts(file_ptr, hosts, total_h, blocks, total_b); 
-    fclose(file_ptr);
-    err_free(path);
-    printf("DONE\n");
-    return 0;
+  char *path;
+  char src[] = "/etc/hosts\0";
+  short length = (short)strlen(src);
+  path = (char *)err_malloc(length);
+  path[length] = '\0';
+  strncpy(path, src, length);
+  FILE *file_ptr = fopen(path, "w");
+  mod_hosts(file_ptr, hosts, total_h, blocks, total_b); 
+  fclose(file_ptr);
+  err_free(path);
+  printf("DONE\n");
+  return 0;
 }
 
 Lines **extract_lines(char *path, int *n, char *stop)
